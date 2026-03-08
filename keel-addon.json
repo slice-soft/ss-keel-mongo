@@ -1,21 +1,42 @@
 {
-  "name": "my-addon",
+  "name": "ss-keel-mongo",
   "version": "0.1.0",
-  "description": "Description of my addon",
-  "register": true,
-  "repo": "github.com/your-user/your-repo",
+  "description": "MongoDB via official mongo-driver for document-first workflows",
+  "repo": "github.com/slice-soft/ss-keel-mongo",
   "steps": [
     {
-      "file": "cmd/main.go",
-      "action": "append",
-      "snippet": "// TODO: add addon initialization here",
-      "flags": []
+      "type": "go_get",
+      "package": "github.com/slice-soft/ss-keel-mongo"
     },
     {
-      "file": "config/config.go",
-      "action": "append",
-      "snippet": "// TODO: add addon configuration here",
-      "flags": []
+      "type": "env",
+      "key": "MONGO_URI",
+      "example": "mongodb://localhost:27017",
+      "description": "MongoDB connection URI"
+    },
+    {
+      "type": "env",
+      "key": "MONGO_DATABASE",
+      "example": "app",
+      "description": "MongoDB database name"
+    },
+    {
+      "type": "main_import",
+      "path": "github.com/slice-soft/ss-keel-mongo/mongo"
+    },
+    {
+      "type": "main_import",
+      "path": "github.com/slice-soft/ss-keel-core/config"
+    },
+    {
+      "type": "main_import",
+      "path": "github.com/slice-soft/ss-keel-core/logger"
+    },
+    {
+      "type": "main_code",
+      "anchor": "before_listen",
+      "guard": "mongo.New(",
+      "code": "mongoURI := config.GetEnvOrDefault(\"MONGO_URI\", \"mongodb://localhost:27017\")\nmongoDatabase := config.GetEnvOrDefault(\"MONGO_DATABASE\", \"app\")\n\nmongoClient, err := mongo.New(mongo.Config{\n\tURI:      mongoURI,\n\tDatabase: mongoDatabase,\n\tLogger:   appLogger,\n})\nif err != nil {\n\tappLogger.Error(\"failed to start app: %v\", err)\n}\ndefer mongoClient.Close()\napp.RegisterHealthChecker(mongo.NewHealthChecker(mongoClient))"
     }
   ]
 }
