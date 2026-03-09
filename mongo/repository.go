@@ -6,52 +6,13 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/slice-soft/ss-keel-core/contracts"
+	"github.com/slice-soft/ss-keel-core/core/httpx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mongodriver "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-// Repository mirrors core.Repository[T, ID] so this package can be used
-// without importing ss-keel-core.
-type Repository[T any, ID any] interface {
-	FindByID(ctx context.Context, id ID) (*T, error)
-	FindAll(ctx context.Context, q PageQuery) (Page[T], error)
-	Create(ctx context.Context, entity *T) error
-	Update(ctx context.Context, id ID, entity *T) error
-	Delete(ctx context.Context, id ID) error
-}
-
-// PageQuery holds pagination parameters.
-type PageQuery struct {
-	Page  int
-	Limit int
-}
-
-// Page is a paginated result set.
-type Page[T any] struct {
-	Data       []T `json:"data"`
-	Total      int `json:"total"`
-	Page       int `json:"page"`
-	Limit      int `json:"limit"`
-	TotalPages int `json:"total_pages"`
-}
-
-// NewPage builds a Page from data and pagination metadata.
-func NewPage[T any](items []T, total, page, limit int) Page[T] {
-	totalPages := 0
-	if limit > 0 {
-		totalPages = (total + limit - 1) / limit
-	}
-
-	return Page[T]{
-		Data:       items,
-		Total:      total,
-		Page:       page,
-		Limit:      limit,
-		TotalPages: totalPages,
-	}
-}
 
 // IDConverter translates domain IDs into Mongo filters.
 // Use this when API IDs differ from stored BSON IDs.
@@ -177,7 +138,7 @@ type MongoRepository[T any, ID any] struct {
 }
 
 // Compile-time check for contract compatibility.
-var _ Repository[any, any] = (*MongoRepository[any, any])(nil)
+var _ contracts.Repository[any, any, httpx.PageQuery, httpx.Page[any]] = (*MongoRepository[any, any])(nil)
 
 // NewRepository creates a repository from a Keel Mongo client and collection name.
 func NewRepository[T any, ID any](client *Client, collectionName string, opts ...RepositoryOption[T, ID]) *MongoRepository[T, ID] {
@@ -240,9 +201,9 @@ func (r *MongoRepository[T, ID]) FindByID(ctx context.Context, id ID) (*T, error
 }
 
 // FindAll returns paginated documents from the collection.
-func (r *MongoRepository[T, ID]) FindAll(ctx context.Context, q PageQuery) (Page[T], error) {
+func (r *MongoRepository[T, ID]) FindAll(ctx context.Context, q httpx.PageQuery) (httpx.Page[T], error) {
 	if err := r.ensureReady(); err != nil {
-		return Page[T]{}, err
+		return httpx.Page[T]{}, err
 	}
 
 	q = normalizePageQuery(q)
@@ -250,7 +211,7 @@ func (r *MongoRepository[T, ID]) FindAll(ctx context.Context, q PageQuery) (Page
 
 	total, err := r.collection.CountDocuments(ctx, filter)
 	if err != nil {
-		return Page[T]{}, err
+		return httpx.Page[T]{}, err
 	}
 
 	findOpts := options.Find().
@@ -262,16 +223,16 @@ func (r *MongoRepository[T, ID]) FindAll(ctx context.Context, q PageQuery) (Page
 
 	cursor, err := r.collection.Find(ctx, filter, findOpts)
 	if err != nil {
-		return Page[T]{}, err
+		return httpx.Page[T]{}, err
 	}
 	defer cursor.Close(ctx)
 
 	var items []T
 	if err := cursor.All(ctx, &items); err != nil {
-		return Page[T]{}, err
+		return httpx.Page[T]{}, err
 	}
 
-	return NewPage(items, int(total), q.Page, q.Limit), nil
+	return httpx.NewPage(items, int(total), q.Page, q.Limit), nil
 }
 
 // FindOneByFilter runs a direct Mongo find-one query and decodes into T.
@@ -403,7 +364,7 @@ func normalizeFilter(filter interface{}) interface{} {
 	return filter
 }
 
-func normalizePageQuery(q PageQuery) PageQuery {
+func normalizePageQuery(q httpx.PageQuery) httpx.PageQuery {
 	if q.Page < 1 {
 		q.Page = 1
 	}
