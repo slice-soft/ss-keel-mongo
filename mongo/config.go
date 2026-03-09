@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/slice-soft/ss-keel-core/contracts"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -33,7 +34,7 @@ type Config struct {
 	AppName                string
 	SkipPing               bool
 	ClientOptions          *options.ClientOptions
-	Logger                 Logger
+	Logger                 contracts.Logger
 }
 
 func (cfg *Config) withDefaults() {

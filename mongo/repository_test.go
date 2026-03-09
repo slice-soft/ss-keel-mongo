@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/slice-soft/ss-keel-core/core/httpx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	mongodriver "go.mongodb.org/mongo-driver/mongo"
@@ -135,7 +136,7 @@ func (c *fakeCollection) Raw() *mongodriver.Collection {
 }
 
 func TestNewPage(t *testing.T) {
-	page := NewPage([]int{1, 2, 3}, 8, 2, 3)
+	page := httpx.NewPage([]int{1, 2, 3}, 8, 2, 3)
 
 	if page.TotalPages != 3 {
 		t.Fatalf("expected total pages 3, got %d", page.TotalPages)
@@ -219,7 +220,7 @@ func TestMongoRepository_FindAllNormalizesPagination(t *testing.T) {
 	}
 	repo := newRepository[repoUser, string](fake)
 
-	page, err := repo.FindAll(context.Background(), PageQuery{Page: 0, Limit: 200})
+	page, err := repo.FindAll(context.Background(), httpx.PageQuery{Page: 0, Limit: 200})
 	if err != nil {
 		t.Fatalf("expected nil error, got %v", err)
 	}
@@ -400,7 +401,7 @@ func TestMongoRepository_AllMethods_EnsureReadyError(t *testing.T) {
 	if _, err := repo.FindByID(ctx, "x"); err == nil {
 		t.Fatal("FindByID: expected ensureReady error")
 	}
-	if _, err := repo.FindAll(ctx, PageQuery{}); err == nil {
+	if _, err := repo.FindAll(ctx, httpx.PageQuery{}); err == nil {
 		t.Fatal("FindAll: expected ensureReady error")
 	}
 	if _, err := repo.FindOneByFilter(ctx, bson.M{}); err == nil {
@@ -628,7 +629,7 @@ func TestNormalizeFilter_NilReturnsEmptyBSONDoc(t *testing.T) {
 // --- normalizePageQuery ---
 
 func TestNormalizePageQuery_ZeroLimitDefaultsTwenty(t *testing.T) {
-	q := normalizePageQuery(PageQuery{Page: 1, Limit: 0})
+	q := normalizePageQuery(httpx.PageQuery{Page: 1, Limit: 0})
 	if q.Limit != 20 {
 		t.Fatalf("expected default limit 20, got %d", q.Limit)
 	}
@@ -640,7 +641,7 @@ func TestMongoRepository_FindAll_CountError(t *testing.T) {
 	wantErr := errors.New("count failed")
 	repo := newRepository[repoUser, string](&fakeCollection{countErr: wantErr})
 
-	_, err := repo.FindAll(context.Background(), PageQuery{})
+	_, err := repo.FindAll(context.Background(), httpx.PageQuery{})
 	if !errors.Is(err, wantErr) {
 		t.Fatalf("expected count error, got %v", err)
 	}
@@ -650,7 +651,7 @@ func TestMongoRepository_FindAll_FindError(t *testing.T) {
 	wantErr := errors.New("find failed")
 	repo := newRepository[repoUser, string](&fakeCollection{countResult: 3, findErr: wantErr})
 
-	_, err := repo.FindAll(context.Background(), PageQuery{})
+	_, err := repo.FindAll(context.Background(), httpx.PageQuery{})
 	if !errors.Is(err, wantErr) {
 		t.Fatalf("expected find error, got %v", err)
 	}
@@ -663,7 +664,7 @@ func TestMongoRepository_FindAll_CursorAllError(t *testing.T) {
 		findResult:  &fakeCursor{allErr: wantErr},
 	})
 
-	_, err := repo.FindAll(context.Background(), PageQuery{})
+	_, err := repo.FindAll(context.Background(), httpx.PageQuery{})
 	if !errors.Is(err, wantErr) {
 		t.Fatalf("expected cursor all error, got %v", err)
 	}
@@ -674,7 +675,7 @@ func TestMongoRepository_FindAll_WithNoDefaultSort(t *testing.T) {
 	fake := &fakeCollection{findResult: &fakeCursor{}}
 	repo := newRepository[repoUser, string](fake, WithDefaultSort[repoUser, string](nil))
 
-	_, err := repo.FindAll(context.Background(), PageQuery{})
+	_, err := repo.FindAll(context.Background(), httpx.PageQuery{})
 	if err != nil {
 		t.Fatalf("expected nil error, got %v", err)
 	}
