@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.1.0...v1.2.0) (2026-03-12)
+
+
+### Features
+
+* implement EntityBase with OnCreate and OnUpdate methods ([#5](https://github.com/slice-soft/ss-keel-mongo/issues/5)) ([443ba7c](https://github.com/slice-soft/ss-keel-mongo/commit/443ba7ce1b2faa335ef69eb3eab956fba164d5ab))
+
 ## [1.1.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.0.0...v1.1.0) (2026-03-09)
 
 
