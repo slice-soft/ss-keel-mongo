@@ -3,7 +3,7 @@ module github.com/slice-soft/ss-keel-mongo
 go 1.25.0
 
 require (
-	github.com/slice-soft/ss-keel-core v0.3.0
+	github.com/slice-soft/ss-keel-core v0.7.0
 	go.mongodb.org/mongo-driver v1.17.6
 )
 
