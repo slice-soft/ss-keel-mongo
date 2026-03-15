@@ -313,13 +313,6 @@ func (r *MongoRepository[T, ID]) Update(ctx context.Context, id ID, entity *T) e
 // Patch applies a partial update using only the fields present in patch (HTTP PATCH semantics).
 // patch can be a bson.M, bson.D, or any BSON-marshalable struct — only the keys
 // provided in patch are written; all other fields in the document are left unchanged.
-//
-// Example:
-//
-//	err := repo.Patch(ctx, id, bson.M{"name": "Alice", "updated_at": time.Now().Unix()})
-//
-// Unlike Update (which always sets every field), Patch lets callers send only
-// the subset of fields that changed — matching standard HTTP PATCH semantics.
 func (r *MongoRepository[T, ID]) Patch(ctx context.Context, id ID, patch interface{}) error {
 	if err := r.ensureReady(); err != nil {
 		return err
