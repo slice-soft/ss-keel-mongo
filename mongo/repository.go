@@ -285,7 +285,9 @@ func (r *MongoRepository[T, ID]) Create(ctx context.Context, entity *T) error {
 	return err
 }
 
-// Update applies a $set update to all fields except the ID field.
+// Update replaces ALL fields of the document (except the ID field) via $set.
+// Equivalent to HTTP PUT — every field is overwritten with the entity values.
+// Use Patch for partial updates (HTTP PATCH semantics).
 func (r *MongoRepository[T, ID]) Update(ctx context.Context, id ID, entity *T) error {
 	if err := r.ensureReady(); err != nil {
 		return err
@@ -305,6 +307,26 @@ func (r *MongoRepository[T, ID]) Update(ctx context.Context, id ID, entity *T) e
 	}
 
 	_, err = r.collection.UpdateOne(ctx, filter, bson.M{"$set": doc})
+	return err
+}
+
+// Patch applies a partial update using only the fields present in patch (HTTP PATCH semantics).
+// patch can be a bson.M, bson.D, or any BSON-marshalable struct — only the keys
+// provided in patch are written; all other fields in the document are left unchanged.
+func (r *MongoRepository[T, ID]) Patch(ctx context.Context, id ID, patch *any) error {
+	if err := r.ensureReady(); err != nil {
+		return err
+	}
+	if patch == nil {
+		return errors.New("patch is required")
+	}
+
+	filter, err := r.idFilter(id)
+	if err != nil {
+		return err
+	}
+
+	_, err = r.collection.UpdateOne(ctx, filter, bson.M{"$set": patch})
 	return err
 }
 

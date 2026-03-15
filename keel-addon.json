@@ -12,7 +12,7 @@
       "type": "env",
       "key": "MONGO_URI",
       "example": "mongodb://localhost:27017",
-      "description": "MongoDB connection URI"
+      "description": "MongoDB connection URI. Atlas example: mongodb+srv://user:pass@cluster.mongodb.net"
     },
     {
       "type": "env",
@@ -21,22 +21,16 @@
       "description": "MongoDB database name"
     },
     {
-      "type": "main_import",
-      "path": "github.com/slice-soft/ss-keel-mongo/mongo"
-    },
-    {
-      "type": "main_import",
-      "path": "github.com/slice-soft/ss-keel-core/config"
-    },
-    {
-      "type": "main_import",
-      "path": "github.com/slice-soft/ss-keel-core/logger"
+      "type": "create_provider_file",
+      "filename": "cmd/setup_mongo.go",
+      "guard": "func setupMongo(",
+      "content": "package main\n\nimport (\n\t\"github.com/slice-soft/ss-keel-core/config\"\n\t\"github.com/slice-soft/ss-keel-core/core\"\n\t\"github.com/slice-soft/ss-keel-core/logger\"\n\t\"github.com/slice-soft/ss-keel-mongo/mongo\"\n)\n\n// setupMongo initialises the MongoDB client and registers a health checker.\nfunc setupMongo(app *core.App, log *logger.Logger) *mongo.Client {\n\tmongoClient, err := mongo.New(mongo.Config{\n\t\tURI:      config.GetEnvOrDefault(\"MONGO_URI\", \"mongodb://localhost:27017\"),\n\t\tDatabase: config.GetEnvOrDefault(\"MONGO_DATABASE\", \"app\"),\n\t\tLogger:   log,\n\t})\n\tif err != nil {\n\t\tlog.Error(\"failed to initialize MongoDB: %v\", err)\n\t}\n\tapp.RegisterHealthChecker(mongo.NewHealthChecker(mongoClient))\n\treturn mongoClient\n}\n"
     },
     {
       "type": "main_code",
       "anchor": "before_listen",
-      "guard": "mongo.New(",
-      "code": "mongoURI := config.GetEnvOrDefault(\"MONGO_URI\", \"mongodb://localhost:27017\")\nmongoDatabase := config.GetEnvOrDefault(\"MONGO_DATABASE\", \"app\")\n\nmongoClient, err := mongo.New(mongo.Config{\n\tURI:      mongoURI,\n\tDatabase: mongoDatabase,\n\tLogger:   appLogger,\n})\nif err != nil {\n\tappLogger.Error(\"failed to start app: %v\", err)\n}\ndefer mongoClient.Close()\napp.RegisterHealthChecker(mongo.NewHealthChecker(mongoClient))"
+      "guard": "setupMongo(",
+      "code": "mongoClient := setupMongo(app, appLogger)\ndefer mongoClient.Close()"
     }
   ]
 }
