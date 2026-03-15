@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.2.0...v1.3.0) (2026-03-15)
+
+
+### Features
+
+* enhance MongoDB support with setup function and partial update method ([#7](https://github.com/slice-soft/ss-keel-mongo/issues/7)) ([e8f6d93](https://github.com/slice-soft/ss-keel-mongo/commit/e8f6d93fbdaf81e4287eee33fefd9f1e5031b73e))
+
 ## [1.2.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.1.0...v1.2.0) (2026-03-12)
 
 
