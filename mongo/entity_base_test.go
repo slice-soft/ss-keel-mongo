@@ -5,7 +5,36 @@ import (
 	"time"
 )
 
-func TestEntityBaseOnCreate(t *testing.T) {
+func TestEntityBaseOnCreate_GeneratesUUID(t *testing.T) {
+	var e EntityBase
+	e.OnCreate()
+
+	if e.ID == "" {
+		t.Fatal("expected ID to be generated, got empty string")
+	}
+}
+
+func TestEntityBaseOnCreate_PreservesExistingID(t *testing.T) {
+	const customID = "custom-id-123"
+	e := EntityBase{ID: customID}
+	e.OnCreate()
+
+	if e.ID != customID {
+		t.Fatalf("expected ID %q, got %q", customID, e.ID)
+	}
+}
+
+func TestEntityBaseOnCreate_UniqueIDsPerRecord(t *testing.T) {
+	var a, b EntityBase
+	a.OnCreate()
+	b.OnCreate()
+
+	if a.ID == b.ID {
+		t.Fatalf("expected unique IDs, both got %q", a.ID)
+	}
+}
+
+func TestEntityBaseOnCreate_Timestamps(t *testing.T) {
 	before := time.Now().UnixMilli()
 
 	var e EntityBase
