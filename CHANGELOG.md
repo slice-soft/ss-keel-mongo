@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.3.0...v1.4.0) (2026-03-16)
+
+
+### Features
+
+* add UUID generation to EntityBase OnCreate method and enhance tests ([#9](https://github.com/slice-soft/ss-keel-mongo/issues/9)) ([17c24c4](https://github.com/slice-soft/ss-keel-mongo/commit/17c24c40c67ef53d8876e33dc587e8437f2d3f11))
+
 ## [1.3.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.2.0...v1.3.0) (2026-03-15)
 
 
