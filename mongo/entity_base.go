@@ -1,6 +1,10 @@
 package mongo
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 // EntityBase provides common document fields for MongoDB entities.
 // Embed this in any entity to get ID, CreatedAt and UpdatedAt with BSON tags pre-configured.
@@ -17,6 +21,11 @@ type EntityBase struct {
 // Call this before inserting a new document.
 func (e *EntityBase) OnCreate() {
 	now := time.Now().UnixMilli()
+
+	if e.ID == "" {
+		e.ID = uuid.New().String()
+	}
+
 	e.CreatedAt = now
 	e.UpdatedAt = now
 }
