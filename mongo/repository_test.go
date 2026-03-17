@@ -181,7 +181,6 @@ func TestMongoRepository_FindByID_DecodeError(t *testing.T) {
 	}
 }
 
-
 func TestMongoRepository_FindAllNormalizesPagination(t *testing.T) {
 	cursor := &fakeCursor{}
 	fake := &fakeCollection{
@@ -293,6 +292,48 @@ func TestMongoRepository_UpdateStripsIDFieldFromSetDocument(t *testing.T) {
 	}
 }
 
+func TestMongoRepository_PatchStripsIDFieldFromSetDocument(t *testing.T) {
+	fake := &fakeCollection{}
+	repo := newRepository[repoUser, string](fake)
+	patch := &repoUser{ID: "u1", Name: "Grace", Profile: map[string]interface{}{"active": true}}
+
+	err := repo.Patch(context.Background(), "u1", patch)
+	if err != nil {
+		t.Fatalf("expected nil error, got %v", err)
+	}
+
+	filter, ok := fake.lastUpdateFilt.(bson.M)
+	if !ok {
+		t.Fatalf("expected bson.M update filter, got %T", fake.lastUpdateFilt)
+	}
+	if filter["_id"] != "u1" {
+		t.Fatalf("expected _id filter to be u1, got %#v", filter["_id"])
+	}
+
+	updateDoc, ok := fake.lastUpdateDoc.(bson.M)
+	if !ok {
+		t.Fatalf("expected bson.M update document, got %T", fake.lastUpdateDoc)
+	}
+	setDoc, ok := updateDoc["$set"].(bson.M)
+	if !ok {
+		t.Fatalf("expected bson.M $set document, got %T", updateDoc["$set"])
+	}
+	if _, hasID := setDoc["_id"]; hasID {
+		t.Fatalf("expected $set to exclude _id, got %#v", setDoc)
+	}
+	if setDoc["name"] != "Grace" {
+		t.Fatalf("expected patched name to be Grace, got %#v", setDoc["name"])
+	}
+}
+
+func TestMongoRepository_PatchNilPatch(t *testing.T) {
+	repo := newRepository[repoUser, string](&fakeCollection{})
+	err := repo.Patch(context.Background(), "u1", nil)
+	if err == nil {
+		t.Fatal("expected patch validation error")
+	}
+}
+
 func TestMongoRepository_DeleteUsesIDFilter(t *testing.T) {
 	fake := &fakeCollection{}
 	repo := newRepository[repoUser, string](fake)
@@ -385,6 +426,9 @@ func TestMongoRepository_AllMethods_EnsureReadyError(t *testing.T) {
 	}
 	if err := repo.Update(ctx, "x", &repoUser{Name: "Ada"}); err == nil {
 		t.Fatal("Update: expected ensureReady error")
+	}
+	if err := repo.Patch(ctx, "x", &repoUser{Name: "Ada"}); err == nil {
+		t.Fatal("Patch: expected ensureReady error")
 	}
 }
 

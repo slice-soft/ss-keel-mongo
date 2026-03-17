@@ -28,7 +28,7 @@
     },
     {
       "type": "main_code",
-      "anchor": "before_listen",
+      "anchor": "before_modules",
       "guard": "setupMongo(",
       "code": "mongoClient := setupMongo(app, appLogger)\ndefer mongoClient.Close()"
     }

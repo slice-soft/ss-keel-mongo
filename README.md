@@ -78,14 +78,14 @@ Defaults applied when omitted:
 
 ```go
 type User struct {
-    ID      primitive.ObjectID `bson:"_id,omitempty"`
+    ID      string             `bson:"_id,omitempty"`
     Name    string             `bson:"name"`
     Profile struct {
         Country string `bson:"country"`
     } `bson:"profile,omitempty"`
 }
 
-repo := mongo.NewRepository[User, primitive.ObjectID](client, "users")
+repo := mongo.NewRepository[User, string](client, "users")
 ```
 
 Standard methods:
@@ -107,17 +107,7 @@ Mongo-focused methods:
 
 ## ID strategies
 
-By default, IDs are used as-is against `_id`.
-
-If your API receives hex strings but Mongo stores `ObjectID`, enable conversion:
-
-```go
-repo := mongo.NewRepository[User, string](
-    client,
-    "users",
-    mongo.WithObjectIDHex[User](),
-)
-```
+By default, IDs are used as-is against `_id`. This matches Keel's generated code, which uses UUID strings across every persistence addon.
 
 Custom IDs and fields are also supported:
 
