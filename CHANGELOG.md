@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/slice-soft/ss-keel-mongo/compare/v1.4.1...v1.4.2) (2026-03-17)
+
+
+### Bug Fixes
+
+* update Patch method to strip ID field from update document and add tests ([#16](https://github.com/slice-soft/ss-keel-mongo/issues/16)) ([49658a1](https://github.com/slice-soft/ss-keel-mongo/commit/49658a1a731f9bfa20f47a44158c5bc0bd15a00c))
+
 ## [1.4.1](https://github.com/slice-soft/ss-keel-mongo/compare/v1.4.0...v1.4.1) (2026-03-17)
 
 
