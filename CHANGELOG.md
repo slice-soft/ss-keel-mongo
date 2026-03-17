@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/slice-soft/ss-keel-mongo/compare/v1.4.0...v1.4.1) (2026-03-17)
+
+
+### Bug Fixes
+
+* remove object id hex ([#12](https://github.com/slice-soft/ss-keel-mongo/issues/12)) ([59ea70e](https://github.com/slice-soft/ss-keel-mongo/commit/59ea70e54114844c862c3d12455fd4d1f6c9ba2a))
+
 ## [1.4.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.3.0...v1.4.0) (2026-03-16)
 
 
