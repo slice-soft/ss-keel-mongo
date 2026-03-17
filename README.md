@@ -4,10 +4,10 @@
 Keel is a Go framework for building REST APIs with modular
 architecture, automatic OpenAPI, and built-in validation.
 
-[![CI](https://github.com/slice-soft/ss-keel-core/actions/workflows/ci.yml/badge.svg)](https://github.com/slice-soft/ss-keel-core/actions)
+[![CI](https://github.com/slice-soft/ss-keel-mongo/actions/workflows/ci.yml/badge.svg)](https://github.com/slice-soft/ss-keel-mongo/actions)
 ![Go](https://img.shields.io/badge/Go-1.25+-00ADD8?logo=go&logoColor=white)
-[![Go Report Card](https://goreportcard.com/badge/github.com/slice-soft/ss-keel-core)](https://goreportcard.com/report/github.com/slice-soft/ss-keel-core)
-[![Go Reference](https://pkg.go.dev/badge/github.com/slice-soft/ss-keel-core.svg)](https://pkg.go.dev/github.com/slice-soft/ss-keel-core)
+[![Go Report Card](https://goreportcard.com/badge/github.com/slice-soft/ss-keel-mongo)](https://goreportcard.com/report/github.com/slice-soft/ss-keel-mongo)
+[![Go Reference](https://pkg.go.dev/badge/github.com/slice-soft/ss-keel-mongo.svg)](https://pkg.go.dev/github.com/slice-soft/ss-keel-mongo)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Made in Colombia](https://img.shields.io/badge/Made%20in-Colombia-FCD116?labelColor=003893)
 
