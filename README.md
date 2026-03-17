@@ -94,6 +94,7 @@ Standard methods:
 - `FindAll(ctx, mongo.PageQuery{Page: 1, Limit: 20})`
 - `Create(ctx, &entity)`
 - `Update(ctx, id, &entity)`
+- `Patch(ctx, id, &entity)`
 - `Delete(ctx, id)`
 
 Mongo-focused methods:
@@ -129,6 +130,35 @@ repo := mongo.NewRepository[User, string](
         return strings.ToLower(id), nil
     }),
 )
+```
+
+---
+
+## EntityBase
+
+`ss-keel-mongo` ships a ready-made `EntityBase` struct you can embed in any document entity to get `ID`, `CreatedAt`, and `UpdatedAt` with the correct BSON tags pre-configured:
+
+```go
+type EntityBase struct {
+    ID        string `json:"id"         bson:"_id,omitempty"`
+    CreatedAt int64  `json:"created_at" bson:"created_at,omitempty"`
+    UpdatedAt int64  `json:"updated_at" bson:"updated_at,omitempty"`
+}
+```
+
+`CreatedAt` and `UpdatedAt` store Unix **milliseconds**. Call the two helpers to stamp timestamps — the generated repository does this automatically:
+
+```go
+entity.OnCreate() // sets CreatedAt and UpdatedAt — call before inserting
+entity.OnUpdate() // sets only UpdatedAt — call before updating
+```
+
+```go
+type ProductEntity struct {
+    mongo.EntityBase
+    Name  string  `bson:"name"`
+    Price float64 `bson:"price"`
+}
 ```
 
 ---
