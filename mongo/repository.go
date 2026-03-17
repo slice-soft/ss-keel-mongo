@@ -9,23 +9,13 @@ import (
 	"github.com/slice-soft/ss-keel-core/contracts"
 	"github.com/slice-soft/ss-keel-core/core/httpx"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	mongodriver "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // IDConverter translates domain IDs into Mongo filters.
-// Use this when API IDs differ from stored BSON IDs.
+// Use this when API IDs differ from stored BSON IDs (e.g. composite or transformed keys).
 type IDConverter[ID any] func(id ID) (interface{}, error)
-
-// ObjectIDHexConverter turns a hex string into primitive.ObjectID.
-func ObjectIDHexConverter(id string) (interface{}, error) {
-	oid, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, fmt.Errorf("invalid ObjectID hex %q: %w", id, err)
-	}
-	return oid, nil
-}
 
 type singleResult interface {
 	Decode(v interface{}) error
@@ -111,13 +101,6 @@ func WithIDConverter[T any, ID any](converter IDConverter[ID]) RepositoryOption[
 		if converter != nil {
 			cfg.idConverter = converter
 		}
-	}
-}
-
-// WithObjectIDHex configures the repository to accept hex-string IDs as ObjectIDs.
-func WithObjectIDHex[T any]() RepositoryOption[T, string] {
-	return func(cfg *repositoryConfig[string]) {
-		cfg.idConverter = ObjectIDHexConverter
 	}
 }
 

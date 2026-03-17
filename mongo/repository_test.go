@@ -8,7 +8,6 @@ import (
 
 	"github.com/slice-soft/ss-keel-core/core/httpx"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	mongodriver "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -182,35 +181,6 @@ func TestMongoRepository_FindByID_DecodeError(t *testing.T) {
 	}
 }
 
-func TestMongoRepository_FindByIDWithObjectIDHexConverter(t *testing.T) {
-	fake := &fakeCollection{
-		findOneResult: &fakeSingleResult{err: mongodriver.ErrNoDocuments},
-	}
-	repo := newRepository[repoUser, string](fake, WithObjectIDHex[repoUser]())
-
-	hexID := primitive.NewObjectID().Hex()
-	_, err := repo.FindByID(context.Background(), hexID)
-	if err != nil {
-		t.Fatalf("expected nil error, got %v", err)
-	}
-
-	filter, ok := fake.lastFindOneFilt.(bson.M)
-	if !ok {
-		t.Fatalf("expected bson.M filter, got %T", fake.lastFindOneFilt)
-	}
-	if _, ok := filter["_id"].(primitive.ObjectID); !ok {
-		t.Fatalf("expected _id to be primitive.ObjectID, got %T", filter["_id"])
-	}
-}
-
-func TestMongoRepository_FindByIDWithInvalidObjectIDHexReturnsError(t *testing.T) {
-	repo := newRepository[repoUser, string](&fakeCollection{}, WithObjectIDHex[repoUser]())
-
-	_, err := repo.FindByID(context.Background(), "not-a-valid-objectid")
-	if err == nil {
-		t.Fatal("expected invalid object id error")
-	}
-}
 
 func TestMongoRepository_FindAllNormalizesPagination(t *testing.T) {
 	cursor := &fakeCursor{}
