@@ -1,10 +1,10 @@
 <img src="https://cdn.slicesoft.dev/boat.svg" width="400" />
 
 # ss-keel-mongo
-Keel is a Go framework for building REST APIs with modular
-architecture, automatic OpenAPI, and built-in validation.
+Official MongoDB addon for Keel — document-first persistence via the official Go driver.
 
 [![CI](https://github.com/slice-soft/ss-keel-mongo/actions/workflows/ci.yml/badge.svg)](https://github.com/slice-soft/ss-keel-mongo/actions)
+[![Release](https://img.shields.io/github/v/release/slice-soft/ss-keel-mongo)](https://github.com/slice-soft/ss-keel-mongo/releases)
 ![Go](https://img.shields.io/badge/Go-1.25+-00ADD8?logo=go&logoColor=white)
 [![Go Report Card](https://goreportcard.com/badge/github.com/slice-soft/ss-keel-mongo)](https://goreportcard.com/report/github.com/slice-soft/ss-keel-mongo)
 [![Go Reference](https://pkg.go.dev/badge/github.com/slice-soft/ss-keel-mongo.svg)](https://pkg.go.dev/github.com/slice-soft/ss-keel-mongo)
@@ -209,7 +209,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Links
 
 - Website: [keel-go.dev](https://keel-go.dev)
-- GitHub: [github.com/slice-soft/ss-keel-cli](https://github.com/slice-soft/ss-keel-cli)
+- GitHub: [github.com/slice-soft/ss-keel-mongo](https://github.com/slice-soft/ss-keel-mongo)
 - Documentation: [docs.keel-go.dev](https://docs.keel-go.dev)
 
 ---
