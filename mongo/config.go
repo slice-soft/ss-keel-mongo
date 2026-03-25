@@ -21,8 +21,8 @@ const (
 
 // Config controls connection and pool behavior for MongoDB.
 type Config struct {
-	URI                    string
-	Database               string
+	URI                    string `keel:"mongo.uri,required"`
+	Database               string `keel:"mongo.database,required"`
 	Production             bool
 	ConnectTimeout         time.Duration
 	PingTimeout            time.Duration
@@ -31,7 +31,7 @@ type Config struct {
 	MaxPoolSize            uint64
 	MinPoolSize            uint64
 	MaxConnIdleTime        time.Duration
-	AppName                string
+	AppName                string `keel:"app.name"`
 	SkipPing               bool
 	ClientOptions          *options.ClientOptions
 	Logger                 contracts.Logger

@@ -28,8 +28,8 @@ func (c *Client) Manifest() contracts.AddonManifest {
 		Capabilities: []string{"database"},
 		Resources:    []string{"mongodb"},
 		EnvVars: []contracts.EnvVar{
-			{Key: "MONGO_URI", Description: "MongoDB connection URI", Required: true, Secret: true, Source: "mongo"},
-			{Key: "MONGO_DATABASE", Description: "MongoDB database name to connect to", Required: true, Secret: false, Source: "mongo"},
+			{Key: "MONGO_URI", ConfigKey: "mongo.uri", Description: "MongoDB connection URI", Required: false, Secret: true, Default: "mongodb://localhost:27017", Source: "mongo"},
+			{Key: "MONGO_DATABASE", ConfigKey: "mongo.database", Description: "MongoDB database name to connect to", Required: false, Secret: false, Default: "app", Source: "mongo"},
 		},
 	}
 }
