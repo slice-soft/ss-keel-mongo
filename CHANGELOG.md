@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.5.1...v1.6.0) (2026-03-25)
+
+
+### Features
+
+* update MongoDB configuration and environment variables for improved flexibility ([#23](https://github.com/slice-soft/ss-keel-mongo/issues/23)) ([238bee9](https://github.com/slice-soft/ss-keel-mongo/commit/238bee963b94975f2c322c2dedf4f800b564c998))
+
 ## [1.5.1](https://github.com/slice-soft/ss-keel-mongo/compare/v1.5.0...v1.5.1) (2026-03-25)
 
 
