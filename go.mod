@@ -3,7 +3,8 @@ module github.com/slice-soft/ss-keel-mongo
 go 1.25.0
 
 require (
-	github.com/slice-soft/ss-keel-core v0.7.0
+	github.com/google/uuid v1.5.0
+	github.com/slice-soft/ss-keel-core v0.9.0
 	go.mongodb.org/mongo-driver v1.17.6
 )
 
@@ -15,7 +16,6 @@ require (
 	github.com/go-playground/validator/v10 v10.16.0 // indirect
 	github.com/gofiber/fiber/v2 v2.52.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/uuid v1.5.0 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
