@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/slice-soft/ss-keel-mongo/compare/v1.5.0...v1.5.1) (2026-03-25)
+
+
+### Bug Fixes
+
+* Update ss-keel-core dependency to v0.10.0 in go.mod and go.sum ([#21](https://github.com/slice-soft/ss-keel-mongo/issues/21)) ([0ed38fa](https://github.com/slice-soft/ss-keel-mongo/commit/0ed38fa786009c6f7dfe297b9b7ca5e982d1bbf0))
+
 ## [1.5.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.4.2...v1.5.0) (2026-03-25)
 
 
