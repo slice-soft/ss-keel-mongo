@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/slice-soft/ss-keel-core/contracts"
 	mongodriver "go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
@@ -15,6 +16,7 @@ type Client struct {
 	client            *mongodriver.Client
 	database          *mongodriver.Database
 	disconnectTimeout time.Duration
+	events            chan contracts.PanelEvent
 }
 
 // New creates a MongoDB client, validates connectivity, and returns the selected database handle.
@@ -28,7 +30,17 @@ func New(cfg Config) (*Client, error) {
 	connectCtx, cancelConnect := context.WithTimeout(context.Background(), cfg.ConnectTimeout)
 	defer cancelConnect()
 
-	client, err := mongodriver.Connect(connectCtx, buildClientOptions(cfg))
+	events := make(chan contracts.PanelEvent, 256)
+	mon := newMongoMonitor(func(e contracts.PanelEvent) {
+		select {
+		case events <- e:
+		default:
+		}
+	})
+	clientOpts := buildClientOptions(cfg)
+	clientOpts.SetMonitor(mon.asCommandMonitor())
+
+	client, err := mongodriver.Connect(connectCtx, clientOpts)
 	if err != nil {
 		return nil, fmt.Errorf("unable to connect to mongodb: %w", err)
 	}
@@ -51,6 +63,7 @@ func New(cfg Config) (*Client, error) {
 		client:            client,
 		database:          client.Database(cfg.Database),
 		disconnectTimeout: cfg.DisconnectTimeout,
+		events:            events,
 	}, nil
 }
 
@@ -84,6 +97,14 @@ func (c *Client) Ping(ctx context.Context) error {
 		return errors.New("mongodb client is nil")
 	}
 	return c.client.Ping(ctx, readpref.Primary())
+}
+
+// tryEmit sends a PanelEvent to the events channel without blocking.
+func (c *Client) tryEmit(e contracts.PanelEvent) {
+	select {
+	case c.events <- e:
+	default:
+	}
 }
 
 // Close disconnects the MongoDB client using a bounded timeout.
