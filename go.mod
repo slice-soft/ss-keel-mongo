@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/google/uuid v1.5.0
-	github.com/slice-soft/ss-keel-core v0.10.0
+	github.com/slice-soft/ss-keel-core v0.11.0
 	go.mongodb.org/mongo-driver v1.17.6
 )
 

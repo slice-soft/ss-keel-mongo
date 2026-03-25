@@ -68,22 +68,34 @@ func TestAddon_Manifest(t *testing.T) {
 	if uri.Key != "MONGO_URI" {
 		t.Errorf("EnvVars[0].Key = %q, want %q", uri.Key, "MONGO_URI")
 	}
-	if !uri.Required {
-		t.Error("EnvVars[0].Required should be true")
+	if uri.ConfigKey != "mongo.uri" {
+		t.Errorf("EnvVars[0].ConfigKey = %q, want %q", uri.ConfigKey, "mongo.uri")
+	}
+	if uri.Required {
+		t.Error("EnvVars[0].Required should be false")
 	}
 	if !uri.Secret {
 		t.Error("EnvVars[0].Secret should be true")
+	}
+	if uri.Default != "mongodb://localhost:27017" {
+		t.Errorf("EnvVars[0].Default = %q, want %q", uri.Default, "mongodb://localhost:27017")
 	}
 
 	db := m.EnvVars[1]
 	if db.Key != "MONGO_DATABASE" {
 		t.Errorf("EnvVars[1].Key = %q, want %q", db.Key, "MONGO_DATABASE")
 	}
-	if !db.Required {
-		t.Error("EnvVars[1].Required should be true")
+	if db.ConfigKey != "mongo.database" {
+		t.Errorf("EnvVars[1].ConfigKey = %q, want %q", db.ConfigKey, "mongo.database")
+	}
+	if db.Required {
+		t.Error("EnvVars[1].Required should be false")
 	}
 	if db.Secret {
 		t.Error("EnvVars[1].Secret should be false")
+	}
+	if db.Default != "app" {
+		t.Errorf("EnvVars[1].Default = %q, want %q", db.Default, "app")
 	}
 }
 

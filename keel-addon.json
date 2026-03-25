@@ -9,6 +9,18 @@
       "package": "github.com/slice-soft/ss-keel-mongo"
     },
     {
+      "type": "property",
+      "key": "mongo.uri",
+      "example": "${MONGO_URI:mongodb://localhost:27017}",
+      "description": "MongoDB connection URI."
+    },
+    {
+      "type": "property",
+      "key": "mongo.database",
+      "example": "${MONGO_DATABASE:app}",
+      "description": "MongoDB database name."
+    },
+    {
       "type": "env",
       "key": "MONGO_URI",
       "example": "mongodb://localhost:27017",
@@ -24,7 +36,7 @@
       "type": "create_provider_file",
       "filename": "cmd/setup_mongo.go",
       "guard": "func setupMongo(",
-      "content": "package main\n\nimport (\n\t\"github.com/slice-soft/ss-keel-core/config\"\n\t\"github.com/slice-soft/ss-keel-core/core\"\n\t\"github.com/slice-soft/ss-keel-core/logger\"\n\t\"github.com/slice-soft/ss-keel-mongo/mongo\"\n)\n\n// setupMongo initialises the MongoDB client and registers a health checker.\nfunc setupMongo(app *core.App, log *logger.Logger) *mongo.Client {\n\tmongoClient, err := mongo.New(mongo.Config{\n\t\tURI:      config.GetEnvOrDefault(\"MONGO_URI\", \"mongodb://localhost:27017\"),\n\t\tDatabase: config.GetEnvOrDefault(\"MONGO_DATABASE\", \"app\"),\n\t\tLogger:   log,\n\t})\n\tif err != nil {\n\t\tlog.Error(\"failed to initialize MongoDB: %v\", err)\n\t}\n\tapp.RegisterHealthChecker(mongo.NewHealthChecker(mongoClient))\n\treturn mongoClient\n}\n"
+      "content": "package main\n\nimport (\n\t\"github.com/slice-soft/ss-keel-core/config\"\n\t\"github.com/slice-soft/ss-keel-core/core\"\n\t\"github.com/slice-soft/ss-keel-core/logger\"\n\t\"github.com/slice-soft/ss-keel-mongo/mongo\"\n)\n\n// setupMongo initialises the MongoDB client and registers a health checker.\nfunc setupMongo(app *core.App, log *logger.Logger) *mongo.Client {\n\tmongoConfig := config.MustLoadConfig[mongo.Config]()\n\tmongoConfig.Logger = log\n\n\tmongoClient, err := mongo.New(mongoConfig)\n\tif err != nil {\n\t\tlog.Error(\"failed to initialize MongoDB: %v\", err)\n\t}\n\tapp.RegisterHealthChecker(mongo.NewHealthChecker(mongoClient))\n\treturn mongoClient\n}\n"
     },
     {
       "type": "main_code",
