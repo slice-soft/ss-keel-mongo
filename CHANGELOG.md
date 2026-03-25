@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/slice-soft/ss-keel-mongo/compare/v1.4.2...v1.5.0) (2026-03-25)
+
+
+### Features
+
+* implement MongoDB client as a debuggable addon with event monitoring ([#19](https://github.com/slice-soft/ss-keel-mongo/issues/19)) ([565cda0](https://github.com/slice-soft/ss-keel-mongo/commit/565cda093d9545df0eba0931d00f9b908ccfa220))
+
 ## [1.4.2](https://github.com/slice-soft/ss-keel-mongo/compare/v1.4.1...v1.4.2) (2026-03-17)
 
 
