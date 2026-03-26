@@ -72,6 +72,15 @@ Defaults applied when omitted:
 
 ---
 
+## Environment variables
+
+| Variable | Example | Description |
+|---|---|---|
+| `MONGO_URI` | `mongodb://localhost:27017` | MongoDB connection URI. Atlas example: `mongodb+srv://user:pass@cluster.mongodb.net` |
+| `MONGO_DATABASE` | `app` | Database name |
+
+---
+
 ## Generic repository
 
 `MongoRepository[T, ID]` implements Keel's CRUD contract and exposes Mongo-native extension points.
